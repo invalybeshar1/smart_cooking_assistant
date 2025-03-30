@@ -65,7 +65,7 @@ export default function ShoppingList() {
   }, {});
 
   return (
-    <div className="min-h-screen bg-orange-50 p-6 max-w-3xl mx-auto">
+    <div className="min-h-screen bg-[#FDF6EC] dark:bg-[#1E1E1E] text-zinc-800 dark:text-white p-6 max-w-3xl mx-auto">
       <h2 className="text-2xl font-bold mb-4">Your Shopping List</h2>
 
       {/* Recipe Selector */}
@@ -78,8 +78,8 @@ export default function ShoppingList() {
               onClick={() => handleAddRecipe(recipe)}
               className={`px-4 py-2 rounded-full border text-sm ${
                 selectedRecipes.includes(recipe)
-                  ? 'bg-green-500 text-white border-green-500'
-                  : 'bg-white border-zinc-300 text-zinc-700'
+                  ? 'bg-[#F4A261] text-white border-[#F4A261]'
+                  : 'bg-white dark:bg-zinc-700 border-zinc-300 dark:border-zinc-500 text-zinc-700 dark:text-white'
               }`}
             >
               {recipe}
@@ -89,15 +89,15 @@ export default function ShoppingList() {
       </div>
 
       {/* Shopping List Items */}
-      <div className="bg-white rounded-xl shadow-md p-4">
+      <div className="bg-white dark:bg-zinc-800 rounded-xl shadow-md p-4">
         <h3 className="text-lg font-semibold mb-3">Ingredients Needed</h3>
         {shoppingList.length === 0 ? (
-          <p className="text-zinc-500 text-sm">No items in your shopping list yet.</p>
+          <p className="text-zinc-500 dark:text-zinc-300 text-sm">No items in your shopping list yet.</p>
         ) : (
           <div className="space-y-4">
             {Object.entries(categorizedList).map(([category, items]) => (
               <div key={category}>
-                <h4 className="text-md font-semibold mb-2 border-b pb-1">{category}</h4>
+                <h4 className="text-md font-semibold mb-2 border-b pb-1 border-zinc-300 dark:border-zinc-600">{category}</h4>
                 <ul className="space-y-2">
                   {items.map((item, index) => (
                     <li

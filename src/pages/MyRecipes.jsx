@@ -1,4 +1,3 @@
-// src/pages/MyRecipes.jsx
 import { useState } from 'react';
 
 const dummyRecipes = [
@@ -38,7 +37,7 @@ export default function MyRecipes() {
   };
 
   return (
-    <div className="min-h-screen bg-orange-50 p-6">
+    <div className="min-h-screen bg-[#FDF6EC] dark:bg-[#1E1E1E] text-zinc-800 dark:text-white p-6">
       <h2 className="text-2xl font-bold mb-6">My Recipes</h2>
 
       {/* Filter Controls */}
@@ -48,7 +47,7 @@ export default function MyRecipes() {
             key={time}
             onClick={() => setFilter(time)}
             className={`px-4 py-1 rounded-full text-sm capitalize border ${
-              filter === time ? 'bg-orange-500 text-white border-orange-500' : 'bg-white text-zinc-700'
+              filter === time ? 'bg-[#F4A261] text-white border-[#F4A261]' : 'bg-white dark:bg-zinc-700 border-zinc-300 dark:border-zinc-600 text-zinc-700 dark:text-white'
             }`}
           >
             {time === 'all' ? 'All Time' : `Past ${time}`}
@@ -61,21 +60,21 @@ export default function MyRecipes() {
         {getFilteredRecipes().map((recipe) => (
           <div
             key={recipe.id}
-            className="flex justify-between items-center bg-white rounded-full shadow-md px-6 py-3"
+            className="flex justify-between items-center bg-white dark:bg-zinc-800 rounded-full shadow-md px-6 py-3"
           >
             <div>
               <h3 className="text-lg font-semibold">{recipe.name}</h3>
-              <p className="text-sm text-zinc-500">Saved on: {recipe.date}</p>
+              <p className="text-sm text-zinc-500 dark:text-zinc-300">Saved on: {recipe.date}</p>
             </div>
             <img
               src={recipe.image}
               alt={recipe.name}
-              className="w-16 h-16 object-cover rounded-full border border-zinc-200"
+              className="w-16 h-16 object-cover rounded-full border border-zinc-200 dark:border-zinc-600"
             />
           </div>
         ))}
         {getFilteredRecipes().length === 0 && (
-          <p className="text-center text-zinc-500 mt-6">No recipes found for this filter.</p>
+          <p className="text-center text-zinc-500 dark:text-zinc-300 mt-6">No recipes found for this filter.</p>
         )}
       </div>
     </div>
