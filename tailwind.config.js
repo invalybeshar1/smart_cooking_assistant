@@ -4,18 +4,26 @@ export default {
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
+  darkMode: 'class', 
   theme: {
     extend: {
       fontFamily: {
-        cozy: ['"Quicksand"', 'sans-serif'], // or 'Poppins', etc.
+        cozy: ['"Quicksand"', 'sans-serif'],
       },
       colors: {
         dough: '#f5e4c3',
         fruit: '#f9c5d1',
         veggie: '#cdebb0',
+        primary: '#F4A261',
+        highlight: '#E76F51',
+        darkbg: '#1E1E1E',
+        chatbg: '#FDF6EC',
+        darkbubble: '#3f3f46', 
+      },
+      borderRadius: {
+        chat: '1.25rem',
       },
     },
   },
-  darkMode: 'class',
   plugins: [],
-}
+};
