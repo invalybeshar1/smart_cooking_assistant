@@ -36,11 +36,11 @@ export default function ContactUs() {
   };
 
   return (
-    <div className="min-h-screen bg-orange-50 p-6 max-w-3xl mx-auto">
+    <div className="min-h-screen bg-[#FDF6EC] dark:bg-[#1E1E1E] text-zinc-800 dark:text-white p-6 max-w-3xl mx-auto">
       <h2 className="text-2xl font-bold mb-6">Contact Us</h2>
 
       {/* Contact Form */}
-      <form onSubmit={handleSubmit} className="bg-white rounded-xl shadow-md p-6 space-y-4 mb-10">
+      <form onSubmit={handleSubmit} className="bg-white dark:bg-zinc-800 rounded-xl shadow-md p-6 space-y-4 mb-10">
         <h3 className="text-lg font-semibold mb-2">Leave us a message</h3>
         <input
           type="text"
@@ -49,7 +49,7 @@ export default function ContactUs() {
           onChange={handleChange}
           placeholder="Your Name"
           required
-          className="w-full px-4 py-2 border rounded-md"
+          className="w-full px-4 py-2 border rounded-md dark:bg-zinc-900 dark:border-zinc-700 dark:text-white"
         />
         <input
           type="email"
@@ -58,7 +58,7 @@ export default function ContactUs() {
           onChange={handleChange}
           placeholder="Your Email"
           required
-          className="w-full px-4 py-2 border rounded-md"
+          className="w-full px-4 py-2 border rounded-md dark:bg-zinc-900 dark:border-zinc-700 dark:text-white"
         />
         <input
           type="text"
@@ -66,7 +66,7 @@ export default function ContactUs() {
           value={formData.subject}
           onChange={handleChange}
           placeholder="Subject"
-          className="w-full px-4 py-2 border rounded-md"
+          className="w-full px-4 py-2 border rounded-md dark:bg-zinc-900 dark:border-zinc-700 dark:text-white"
         />
         <textarea
           name="message"
@@ -75,11 +75,11 @@ export default function ContactUs() {
           placeholder="Your Message"
           required
           rows={4}
-          className="w-full px-4 py-2 border rounded-md"
+          className="w-full px-4 py-2 border rounded-md dark:bg-zinc-900 dark:border-zinc-700 dark:text-white"
         />
         <button
           type="submit"
-          className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-2 rounded-full text-sm"
+          className="bg-[#F4A261] hover:bg-[#E76F51] text-white px-6 py-2 rounded-full text-sm"
         >
           Submit
         </button>
@@ -89,20 +89,20 @@ export default function ContactUs() {
       </form>
 
       {/* FAQs */}
-      <div className="bg-white rounded-xl shadow-md p-6">
+      <div className="bg-white dark:bg-zinc-800 rounded-xl shadow-md p-6">
         <h3 className="text-lg font-semibold mb-4">Frequently Asked Questions</h3>
         <div className="space-y-4">
           {faqs.map((faq, index) => (
-            <div key={index} className="border-b pb-2">
+            <div key={index} className="border-b border-zinc-300 dark:border-zinc-600 pb-2">
               <button
-                className="w-full text-left font-medium text-zinc-800 flex justify-between items-center"
+                className="w-full text-left font-medium text-zinc-800 dark:text-white flex justify-between items-center"
                 onClick={() => setExpanded(expanded === index ? null : index)}
               >
                 {faq.question}
                 <span>{expanded === index ? '-' : '+'}</span>
               </button>
               {expanded === index && (
-                <p className="text-sm text-zinc-600 mt-2">{faq.answer}</p>
+                <p className="text-sm text-zinc-600 dark:text-zinc-300 mt-2">{faq.answer}</p>
               )}
             </div>
           ))}
