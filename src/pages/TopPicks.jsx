@@ -31,13 +31,13 @@ const topPicks = [
   
   export default function TopPicks() {
     return (
-      <div className="min-h-screen bg-orange-50 p-6">
+      <div className="min-h-screen bg-[#FDF6EC] dark:bg-[#1E1E1E] text-zinc-800 dark:text-white p-6">
         <h2 className="text-2xl font-bold mb-6">Top Picks</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {topPicks.map((recipe) => (
             <div
               key={recipe.id}
-              className="bg-white rounded-xl shadow-md overflow-hidden flex flex-col justify-between"
+              className="bg-white dark:bg-zinc-800 rounded-xl shadow-md overflow-hidden flex flex-col justify-between"
             >
               <img
                 src={recipe.image}
@@ -46,10 +46,10 @@ const topPicks = [
               />
               <div className="p-4">
                 <h3 className="text-lg font-semibold mb-1">{recipe.name}</h3>
-                <p className="text-sm text-zinc-600">By {recipe.chef}</p>
-                <p className="text-sm text-zinc-500 mt-1">{recipe.calories} kcal</p>
+                <p className="text-sm text-zinc-600 dark:text-zinc-300">By {recipe.chef}</p>
+                <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-1">{recipe.calories} kcal</p>
                 <div className="flex justify-end mt-4">
-                  <button className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-full text-sm">
+                  <button className="px-4 py-2 bg-[#F4A261] hover:bg-[#E76F51] text-white rounded-full text-sm">
                     Enhance with AI
                   </button>
                 </div>
