@@ -1,8 +1,7 @@
 export default function Footer() {
-    return (
-      <footer className="text-center py-4 border-t border-zinc-300 dark:border-zinc-700 text-sm">
-        &copy; {new Date().getFullYear()} Smart Cooking Assistant. All rights reserved.
-      </footer>
-    );
-  }
-  
+  return (
+    <footer className="mt-auto bg-[#FDEBD0] dark:bg-[#2D2D2D] text-zinc-800 dark:text-white border-t border-zinc-200 dark:border-zinc-700 py-4 px-6 text-center text-sm">
+      <p>© {new Date().getFullYear()} Smart Cooking Assistant. All rights reserved.</p>
+    </footer>
+  );
+}
