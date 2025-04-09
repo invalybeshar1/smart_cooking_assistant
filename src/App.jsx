@@ -13,6 +13,8 @@ import MyRecipes from './pages/MyRecipes';
 import TopPicks from './pages/TopPicks';
 import ShoppingList from './pages/ShoppingList';
 import ContactUs from './pages/ContactUs';
+import Questionnaire from './pages/Questionnaire';
+import PrivateRoute from './components/PrivateRoute';
 
 export default function App() {
   return (
@@ -23,11 +25,14 @@ export default function App() {
           <Routes>
             <Route path="/" element={<Landing />} />
             <Route path="/auth" element={<Auth />} />
-            <Route path="/home" element={<Home />} />
-            <Route path="/my-profile" element={<MyProfile />} />
-            <Route path="/my-recipes" element={<MyRecipes />} />
-            <Route path="/top-picks" element={<TopPicks />} />
-            <Route path="/shopping-list" element={<ShoppingList />} />
+
+            <Route path="/home" element={<PrivateRoute><Home /></PrivateRoute>} />
+            <Route path="/my-profile" element={<PrivateRoute><MyProfile /></PrivateRoute>} />
+            <Route path="/my-recipes" element={<PrivateRoute><MyRecipes /></PrivateRoute>} />
+            <Route path="/shopping-list" element={<PrivateRoute><ShoppingList /></PrivateRoute>} />
+            <Route path="/top-picks" element={<PrivateRoute><TopPicks /></PrivateRoute>} />
+            <Route path="/questionnaire" element={<PrivateRoute><Questionnaire /></PrivateRoute>} />
+
             <Route path="/contact-us" element={<ContactUs />} />
           </Routes>
         </main>
