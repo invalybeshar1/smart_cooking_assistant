@@ -1,5 +1,6 @@
 import { Link, useLocation } from 'react-router-dom';
 import { useState } from 'react';
+import LogoutButton from './LogoutButton';
 
 export default function Header() {
   const [darkMode, setDarkMode] = useState(false);
@@ -31,12 +32,15 @@ export default function Header() {
           </Link>
         ))}
       </nav>
-      <button
-        onClick={toggleDarkMode}
-        className="text-sm px-3 py-1 border rounded-full dark:border-white border-zinc-800"
-      >
-        {darkMode ? 'Light Mode' : 'Dark Mode'}
-      </button>
+      <div className="flex items-center gap-4">
+        <LogoutButton />
+        <button
+          onClick={toggleDarkMode}
+          className="text-sm px-3 py-1 border rounded-full dark:border-white border-zinc-800"
+        >
+          {darkMode ? 'Light Mode' : 'Dark Mode'}
+        </button>
+      </div>
     </header>
   );
 }
