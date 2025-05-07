@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import emailjs from 'emailjs-com';
 
 const faqs = [
   {
@@ -22,6 +23,7 @@ const faqs = [
 export default function ContactUs() {
   const [formData, setFormData] = useState({ name: '', email: '', subject: '', message: '' });
   const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState('');
   const [expanded, setExpanded] = useState(null);
 
   const handleChange = (e) => {
@@ -30,9 +32,28 @@ export default function ContactUs() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    setSubmitted(true);
-    setFormData({ name: '', email: '', subject: '', message: '' });
-    setTimeout(() => setSubmitted(false), 3000);
+
+    emailjs.send(
+      'service_ry0d8ty',
+      'template_h8sdfw4',
+      {
+        from_name: formData.name,
+        from_email: formData.email,
+        subject: formData.subject,
+        message: formData.message
+      },
+      'kHOs2RQZWP_1mi2vQ'
+    )
+    .then(() => {
+      setSubmitted(true);
+      setError('');
+      setFormData({ name: '', email: '', subject: '', message: '' });
+      setTimeout(() => setSubmitted(false), 3000);
+    })
+    .catch((err) => {
+      console.error('EmailJS Error:', err);
+      setError('Something went wrong. Please try again later.');
+    });
   };
 
   return (
@@ -85,6 +106,9 @@ export default function ContactUs() {
         </button>
         {submitted && (
           <p className="text-green-600 text-sm mt-2">Thank you! We'll get back to you within 24 hours.</p>
+        )}
+        {error && (
+          <p className="text-red-600 text-sm mt-2">{error}</p>
         )}
       </form>
 

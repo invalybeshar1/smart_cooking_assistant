@@ -8,10 +8,10 @@ export default function Landing() {
   };
 
   return (
-    <section className="relative h-screen flex items-center justify-center bg-[url('/hero-bg.jpg')] bg-cover bg-center">
-      <div className="text-center">
-        <h2 className="text-4xl font-bold mb-6 font-serif text-white drop-shadow-lg">
-          Welcome to the Smart Cooking Assistant
+    <section className="h-screen flex items-center justify-center bg-cover bg-center bg-no-repeat bg-[url('/banner.jpg')]">
+      <div className="bg-white/80 dark:bg-zinc-800/80 backdrop-blur-sm p-8 rounded-2xl shadow-lg text-center">
+        <h2 className="text-4xl font-bold mb-6 font-serif text-zinc-900 dark:text-white">
+          Welcome to the Smart Cooking Assistant!
         </h2>
         <button
           onClick={handleStart}
