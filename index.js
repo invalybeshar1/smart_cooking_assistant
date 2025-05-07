@@ -6,7 +6,7 @@ import registerRoute from './routes/register.js';
 import questionnaireRoute from './routes/questionnaire.js';
 import loginRoute from './routes/login.js';
 import userRoute from './routes/user.js';
-
+import chatRoute from './routes/chat.js';
 dotenv.config();
 
 const app = express();
@@ -21,6 +21,7 @@ app.use('/api/register', registerRoute);
 app.use('/api/questionnaire', questionnaireRoute);
 app.use('/api/login', loginRoute);
 app.use('/api/user', userRoute);
+app.use('/api/chat', chatRoute);
 
 // Test route
 app.get('/', (req, res) => {
