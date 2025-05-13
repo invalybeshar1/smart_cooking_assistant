@@ -44,10 +44,17 @@ Respond ONLY with a valid JSON object using the following format:
     "cook": "e.g. 15 minutes",
     "total": "e.g. 25 minutes"
   },
-  "instructions": [ "Step 1: ...", "Step 2: ...", ... ]
+  "instructions": [
+    "Step 1: Describe in detail what needs to be prepared or preheated. Mention utensils if needed.",
+    "Step 2: Describe each cooking action in a clear, step-by-step way with tips like temperature or timing.",
+    "Step 3: Add clarifications where a beginner might need help (e.g., how to know when something is done).",
+    ...
+  ]
 }
 
-Use only plain JSON — no markdown, no headings, no bullet points, no explanation. If any field is missing, use "N/A" or an empty array.
+Make each instruction step clear, friendly, and a bit more elaborate than usual — as if you're walking a beginner through the process.
+
+Respond ONLY in JSON. No markdown. No explanations.
 `;
 
     const reply = await askGemini(prompt);
