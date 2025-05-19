@@ -9,7 +9,8 @@ router.post('/', async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    const user = db.prepare('SELECT * FROM users WHERE email = ?').get(email);
+    const user = await db.get('SELECT * FROM users WHERE email = ?', [email]);
+
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
@@ -29,10 +30,17 @@ router.post('/', async (req, res) => {
       user: {
         id: user.id,
         name: user.name,
+        last_name: user.last_name,
         email: user.email,
-        bmi: parseFloat(bmi.toFixed(2)),
-        is_premium: user.is_premium
+        calorie_goal: user.calorie_goal,
+        current_weight: user.current_weight,
+        goal_weight: user.goal_weight,
+        height_cm: user.height_cm,
+        activity_level: user.activity_level,
+        is_premium: user.is_premium,
+        bmi: parseFloat(bmi.toFixed(2))
       }
+
     });
   } catch (err) {
     console.error('Login error:', err.message);
