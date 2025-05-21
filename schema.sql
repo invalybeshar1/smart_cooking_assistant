@@ -53,6 +53,9 @@ CREATE TABLE recipes (
   status TEXT DEFAULT 'approved',
   author_id INTEGER,
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  rep_time_minutes INTEGER NULL,
+  cook_time_minutes INTEGER NULL,
+  total_time_minutes INTEGER NULL,
   FOREIGN KEY (author_id) REFERENCES users(id) ON DELETE SET NULL
 );
 
