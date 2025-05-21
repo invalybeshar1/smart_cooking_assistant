@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { FaUserAlt, FaLeaf, FaAllergies, FaExclamationTriangle } from 'react-icons/fa';
+import { FaUserAlt, FaLeaf, FaAllergies, FaExclamationTriangle, FaExchangeAlt } from 'react-icons/fa'; // Added FaExchangeAlt
 
 export default function MyProfile() {
   const [activeTab, setActiveTab] = useState('preferences');
@@ -14,12 +14,44 @@ export default function MyProfile() {
     profilePicture: null,
   });
 
+  // Substitution states
+  const [substitutions, setSubstitutions] = useState([]);
+  const [newSubstitutionOriginal, setNewSubstitutionOriginal] = useState('');
+  const [newSubstitutionPreferred, setNewSubstitutionPreferred] = useState('');
+  const [loadingSubstitutions, setLoadingSubstitutions] = useState(false);
+  const [errorSubstitutions, setErrorSubstitutions] = useState('');
+
   const dietaryOptions = ['Vegetarian', 'Vegan', 'Low-Carb', 'High-Protein', 'Keto', 'Pescatarian'];
   const allergyOptions = ['Nuts', 'Shellfish', 'Gluten', 'Dairy', 'Eggs'];
   const intoleranceOptions = ['Lactose', 'Fructose', 'Gluten'];
 
+  const getToken = () => localStorage.getItem('token') || sessionStorage.getItem('token');
+
+  const fetchSubstitutions = async () => {
+    const token = getToken();
+    if (!token) return;
+    setLoadingSubstitutions(true);
+    setErrorSubstitutions('');
+    try {
+      const res = await fetch('http://localhost:5001/api/user/substitutions', {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.message || `Failed to fetch substitutions: ${res.status}`);
+      }
+      const data = await res.json();
+      setSubstitutions(data);
+    } catch (err) {
+      setErrorSubstitutions(err.message);
+      console.error('Error fetching substitutions:', err);
+    } finally {
+      setLoadingSubstitutions(false);
+    }
+  };
+
   useEffect(() => {
-    const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+    const token = getToken();
     if (!token) return;
 
     fetch('http://localhost:5001/api/user/profile', {
@@ -27,17 +59,89 @@ export default function MyProfile() {
     })
       .then(res => res.json())
       .then(data => {
-        setUser(data);
-        setFormData({
-          weight: data.weight,
-          calorieGoal: data.calorieGoal,
-          preferences: data.preferences || [],
-          allergies: data.allergies || [],
-          intolerances: data.intolerances || [],
-          profilePicture: null,
-        });
+        if (data.message && data.message.includes('User not found')) { // Handle case where profile might not exist yet
+          setUser({ name: 'New User', email: '', age: '', height: '', weight: '', bmi: '' }); // Provide default structure
+          setFormData({
+            weight: '', calorieGoal: '', preferences: [], allergies: [], intolerances: [], profilePicture: null,
+          });
+        } else {
+          setUser(data);
+          setFormData({
+            weight: data.weight || '',
+            calorieGoal: data.calorieGoal || '',
+            preferences: data.preferences || [],
+            allergies: data.allergies || [],
+            intolerances: data.intolerances || [],
+            profilePicture: null,
+          });
+        }
+      })
+      .catch(err => {
+        console.error("Error fetching profile:", err);
+        setUser({ name: 'Error Loading Profile', email: '', age: '', height: '', weight: '', bmi: '' }); // Display error state
       });
+    
+    fetchSubstitutions();
   }, []);
+
+  const handleAddSubstitution = async (e) => {
+    e.preventDefault();
+    const token = getToken();
+    if (!token || !newSubstitutionOriginal.trim() || !newSubstitutionPreferred.trim()) {
+      setErrorSubstitutions('Both original and preferred ingredient fields are required.');
+      return;
+    }
+    setLoadingSubstitutions(true);
+    setErrorSubstitutions('');
+    try {
+      const res = await fetch('http://localhost:5001/api/user/substitutions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          original_ingredient_name: newSubstitutionOriginal,
+          preferred_ingredient_name: newSubstitutionPreferred,
+        }),
+      });
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.message || `Failed to add substitution: ${res.status}`);
+      }
+      setNewSubstitutionOriginal('');
+      setNewSubstitutionPreferred('');
+      fetchSubstitutions(); // Refresh list
+    } catch (err) {
+      setErrorSubstitutions(err.message);
+      console.error('Error adding substitution:', err);
+    } finally {
+      setLoadingSubstitutions(false);
+    }
+  };
+
+  const handleDeleteSubstitution = async (id) => {
+    const token = getToken();
+    if (!token) return;
+    setLoadingSubstitutions(true);
+    setErrorSubstitutions('');
+    try {
+      const res = await fetch(`http://localhost:5001/api/user/substitutions/${id}`, {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.message || `Failed to delete substitution: ${res.status}`);
+      }
+      fetchSubstitutions(); // Refresh list
+    } catch (err) {
+      setErrorSubstitutions(err.message);
+      console.error('Error deleting substitution:', err);
+    } finally {
+      setLoadingSubstitutions(false);
+    }
+  };
 
   const toggleSelection = (value, key) => {
     setFormData(prev => {
@@ -61,7 +165,7 @@ export default function MyProfile() {
   };
 
   const handleSave = async () => {
-    const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+    const token = getToken();
   
     try {
       const res = await fetch('http://localhost:5001/api/user/profile', {
@@ -103,7 +207,7 @@ export default function MyProfile() {
   if (!user) return <div className="text-center mt-20">Loading...</div>;
 
   const calorieGoal = formData.calorieGoal || 1800;
-  const currentCalories = 1250;
+  const currentCalories = 1250; // This seems static, consider if it should be dynamic
 
   return (
     <div className="min-h-screen bg-[#FDF6EC] dark:bg-[#1E1E1E] text-zinc-800 dark:text-white flex flex-col md:flex-row p-6 gap-6">
@@ -128,7 +232,7 @@ export default function MyProfile() {
           <p><strong>Age:</strong> {user.age}</p>
           <p><strong>Height:</strong> {user.height} cm</p>
           <p><strong>Weight:</strong> {editMode ? (
-            <input name="weight" type="number" value={formData.weight} onChange={handleChange} className="w-full px-2 py-1 border rounded" />
+            <input name="weight" type="number" value={formData.weight} onChange={handleChange} className="w-full px-2 py-1 border rounded dark:bg-zinc-700 dark:text-white" />
           ) : `${user.weight} kg`}</p>
           <p><strong>BMI:</strong> <span className="inline-block bg-green-100 text-green-700 px-2 py-0.5 rounded-full">{user.bmi}</span></p>
         </div>
@@ -156,7 +260,7 @@ export default function MyProfile() {
                 name="calorieGoal"
                 value={formData.calorieGoal}
                 onChange={handleChange}
-                className="w-full px-3 py-1 rounded border"
+                className="w-full px-3 py-1 rounded border dark:bg-zinc-700 dark:text-white"
               />
             ) : (
               <div className="w-full bg-zinc-200 dark:bg-zinc-700 rounded-full h-4">
@@ -209,8 +313,83 @@ export default function MyProfile() {
           )}
         </section>
 
+        {/* Ingredient Substitution Preferences Section */}
+        <section className="bg-white dark:bg-zinc-800 p-6 rounded-xl shadow-md mt-6">
+          <h3 className="text-lg font-semibold mb-4 flex items-center">
+            <FaExchangeAlt className="mr-2 text-[#F4A261]" /> Ingredient Substitution Preferences
+          </h3>
+
+          {errorSubstitutions && <p className="text-red-500 text-sm mb-4">{errorSubstitutions}</p>}
+
+          <form onSubmit={handleAddSubstitution} className="mb-6">
+            <div className="flex flex-col sm:flex-row gap-4 mb-4">
+              <div className="flex-1">
+                <label htmlFor="originalIngredient" className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1">
+                  Original Ingredient
+                </label>
+                <input
+                  type="text"
+                  id="originalIngredient"
+                  value={newSubstitutionOriginal}
+                  onChange={(e) => setNewSubstitutionOriginal(e.target.value)}
+                  placeholder="e.g., White Sugar"
+                  className="w-full px-3 py-2 border border-zinc-300 dark:border-zinc-600 rounded-md shadow-sm focus:ring-[#F4A261] focus:border-[#F4A261] dark:bg-zinc-700 dark:text-white"
+                />
+              </div>
+              <div className="flex-1">
+                <label htmlFor="preferredIngredient" className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1">
+                  Preferred Ingredient
+                </label>
+                <input
+                  type="text"
+                  id="preferredIngredient"
+                  value={newSubstitutionPreferred}
+                  onChange={(e) => setNewSubstitutionPreferred(e.target.value)}
+                  placeholder="e.g., Coconut Sugar"
+                  className="w-full px-3 py-2 border border-zinc-300 dark:border-zinc-600 rounded-md shadow-sm focus:ring-[#F4A261] focus:border-[#F4A261] dark:bg-zinc-700 dark:text-white"
+                />
+              </div>
+            </div>
+            <button
+              type="submit"
+              disabled={loadingSubstitutions}
+              className="px-4 py-2 bg-[#F4A261] hover:bg-[#E76F51] text-white rounded-md text-sm disabled:opacity-50"
+            >
+              {loadingSubstitutions ? 'Adding...' : 'Add Substitution'}
+            </button>
+          </form>
+
+          {loadingSubstitutions && substitutions.length === 0 && <p>Loading substitutions...</p>}
+          
+          {substitutions.length > 0 ? (
+            <ul className="space-y-3">
+              {substitutions.map((sub) => (
+                <li key={sub.id} className="flex justify-between items-center p-3 bg-zinc-50 dark:bg-zinc-900 rounded-md shadow-sm">
+                  <div>
+                    <p className="text-sm">
+                      <span className="font-semibold">Original:</span> {sub.original_ingredient_name}
+                    </p>
+                    <p className="text-sm">
+                      <span className="font-semibold">Preferred:</span> {sub.preferred_ingredient_name}
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => handleDeleteSubstitution(sub.id)}
+                    disabled={loadingSubstitutions}
+                    className="px-3 py-1 bg-red-500 hover:bg-red-600 text-white rounded-md text-xs disabled:opacity-50"
+                  >
+                    Delete
+                  </button>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            !loadingSubstitutions && <p className="text-sm text-zinc-500 dark:text-zinc-400">No substitutions added yet.</p>
+          )}
+        </section>
+
         {/* Subscription Section */}
-        <section className="bg-white dark:bg-zinc-800 p-6 rounded-xl shadow-md">
+        <section className="bg-white dark:bg-zinc-800 p-6 rounded-xl shadow-md mt-6">
           <h3 className="text-lg font-semibold mb-4">Subscription</h3>
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <div>

@@ -181,3 +181,11 @@ CREATE TABLE user_saved_recipes (
   FOREIGN KEY (recipe_id) REFERENCES recipes(id) ON DELETE CASCADE,
   UNIQUE(user_id, recipe_id)
 );
+
+CREATE TABLE user_ingredient_substitutions (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  user_id INTEGER,
+  original_ingredient_name TEXT NOT NULL,
+  preferred_ingredient_name TEXT NOT NULL,
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);

@@ -71,4 +71,55 @@ router.put('/profile', authMiddleware, (req, res) => {
   }
 });
 
+// Get all ingredient substitutions for the user
+router.get('/substitutions', authMiddleware, (req, res) => {
+  const userId = req.user.id;
+  try {
+    const substitutions = db.prepare('SELECT id, original_ingredient_name, preferred_ingredient_name FROM user_ingredient_substitutions WHERE user_id = ?').all(userId);
+    res.json(substitutions);
+  } catch (err) {
+    console.error('Error fetching substitutions:', err.message);
+    res.status(500).json({ message: 'Error fetching substitutions' });
+  }
+});
+
+// Add a new ingredient substitution for the user
+router.post('/substitutions', authMiddleware, (req, res) => {
+  const userId = req.user.id;
+  const { original_ingredient_name, preferred_ingredient_name } = req.body;
+
+  if (!original_ingredient_name || !preferred_ingredient_name) {
+    return res.status(400).json({ message: 'Missing original_ingredient_name or preferred_ingredient_name' });
+  }
+
+  try {
+    const stmt = db.prepare('INSERT INTO user_ingredient_substitutions (user_id, original_ingredient_name, preferred_ingredient_name) VALUES (?, ?, ?)');
+    const info = stmt.run(userId, original_ingredient_name, preferred_ingredient_name);
+    res.status(201).json({ message: 'Substitution added successfully', substitutionId: info.lastInsertRowid });
+  } catch (err) {
+    console.error('Error adding substitution:', err.message);
+    res.status(500).json({ message: 'Error adding substitution' });
+  }
+});
+
+// Delete an ingredient substitution for the user
+router.delete('/substitutions/:id', authMiddleware, (req, res) => {
+  const userId = req.user.id;
+  const substitutionId = req.params.id;
+
+  try {
+    const stmt = db.prepare('DELETE FROM user_ingredient_substitutions WHERE id = ? AND user_id = ?');
+    const info = stmt.run(substitutionId, userId);
+
+    if (info.changes === 0) {
+      return res.status(404).json({ message: 'Substitution not found or not owned by user' });
+    }
+
+    res.json({ message: 'Substitution deleted successfully' });
+  } catch (err) {
+    console.error('Error deleting substitution:', err.message);
+    res.status(500).json({ message: 'Error deleting substitution' });
+  }
+});
+
 export default router;
