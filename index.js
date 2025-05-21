@@ -7,6 +7,8 @@ import questionnaireRoute from './routes/questionnaire.js';
 import loginRoute from './routes/login.js';
 import userRoute from './routes/user.js';
 import chatRoute from './routes/chat.js';
+import shoppingListRouter from './routes/shoppingList.js';
+import recipesRouter from './routes/recipes.js'; // Added import for recipes router
 dotenv.config();
 
 const app = express();
@@ -22,6 +24,8 @@ app.use('/api/questionnaire', questionnaireRoute);
 app.use('/api/login', loginRoute);
 app.use('/api/user', userRoute);
 app.use('/api/chat', chatRoute);
+app.use('/api/shopping-list', shoppingListRouter);
+app.use('/api/recipes', recipesRouter); // Added route for recipes
 
 // Test route
 app.get('/', (req, res) => {
