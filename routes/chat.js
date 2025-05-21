@@ -1,5 +1,5 @@
 import express from 'express';
-import { askGemini } from '../geminiService.js';
+import { askGemini } from './geminiService.js';
 
 const router = express.Router();
 
